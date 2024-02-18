@@ -1,2 +1,5 @@
-package example.cashcard;public class CashCard {
+package example.cashcard;
+
+record CashCard(Long id, Double amount) {
+
 }
