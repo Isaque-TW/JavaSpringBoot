@@ -1,7 +1,11 @@
 # Construindo API REST com Spring Boot
 
-Spring e Spring Boot são estruturas Java usadas para construir aplicativos, que ajudam os desenvolvedores a construir e estruturar seu código de maneira eficiente e escalonável.
+Spring e Spring Boot são estruturas Java usadas para construir aplicativos. Como kits de ferramentas que ajudam os desenvolvedores a construir e estruturar seu código de maneira eficiente e escalável.
 
+    Spring é uma estrutura abrangente que 
+    fornece vários módulos para a construção de diferentes tipos de aplicativos. 
+    É como ter uma caixa de ferramentas gigante com todas as ferramentas
+    que você precisa para construir o que quiser``
 À medida que construímos a API Family Cash Card, usaremos Spring MVC para a aplicação web, Spring Data para acesso a dados e Spring Security para autenticação e autorização.
 
 Spring Boot é como uma versão mais opinativa do Spring; vem com muitas configurações e dependências pré-configuradas que são comumente usadas em aplicativos Spring tornando muito fácil começar rapidamente, sem ter que se preocupar em configurar tudo do zero. Além disso, o Spring Boot vem com um servidor web integrado, para que você possa criar e implantar facilmente aplicativos web sem precisar de um servidor externo.
@@ -31,14 +35,16 @@ Quando comparado ao XML, o JSON lê e grava mais rápido, é mais fácil de usar
 
 Por essas razões, o JSON substituiu amplamente o XML como o formato mais amplamente usado para APIs usadas por aplicativos Web, incluindo APIs REST.
 
+# Test first:
 ## O que é desenvolvimento orientado a testes?
 É comum que as equipes de desenvolvimento de software criem conjuntos de testes automatizados para se protegerem contra regressões. Frequentemente, esses testes são escritos após a criação do código do recurso do aplicativo. Adotaremos uma abordagem alternativa: escreveremos testes antes de implementar o código da aplicação. Isso é chamado de desenvolvimento orientado a testes (TDD).
 
-Freqüentemente, esses testes são escritos após a criação do código do recurso do aplicativo. Adotaremos uma abordagem alternativa: escreveremos testes antes de implementar o código da aplicação. Isso é chamado de desenvolvimento orientado a testes (TDD).
+Por que aplicar TDD? Ao afirmar o comportamento esperado antes de implementar a funcionalidade desejada, estamos projetando o sistema com base no que queremos que ele faça, e não no que o sistema já faz.
 
+Outro benefício do “test-drive” do código do aplicativo é que os testes orientam você a escrever o código mínimo necessário para satisfazer a implementação. Quando os testes são aprovados, você tem uma implementação funcional (o código do aplicativo) e uma proteção contra a introdução de erros no futuro (os testes).
 
 ## A Pirâmide de Teste
-Freqüentemente, esses testes são escritos após a criação do código do recurso do aplicativo. Adotaremos uma abordagem alternativa: escreveremos testes antes de implementar o código da aplicação. Isso é chamado de desenvolvimento orientado a testes (TDD).
+Diferentes testes podem ser escritos em diferentes níveis do sistema. Em cada nível, existe um equilíbrio entre a velocidade de execução, o “custo” para manter o teste e a confiança que ele traz para a correção do sistema. Esta hierarquia é frequentemente representada como uma “pirâmide de testes”.
 
 ![piramidetestes](https://github.com/leila-bwt/APIRestComTestFirst/assets/108028195/90360f7f-49dd-4204-b150-a64e5b1e7dd2)
 
@@ -57,18 +63,55 @@ Verde: Implemente a coisa mais simples que pode funcionar para fazer o teste pas
 Refatorar: Procure oportunidades para simplificar, reduzir a duplicação ou melhorar o código de outra forma sem alterar qualquer comportamento – refatorar .
 Repita!
 
-### Escrevendo um teste com falha
+ ## 1. Vermelho
+```bash
+Escreva um teste com falha para a funcionalidade desejada.
+```
+ ## 2. Verde
+```bash
+Implemente a coisa mais simples que pode funcionar para fazer o teste passar.
+```
+ ## 3. Refatorar
+### Procure oportunidades para simplificar, reduzir a duplicação ou melhorar o código de outra forma sem alterar qualquer comportamento
+
 Aqui abordaremos uma breve introdução à biblioteca de testes JUnit e à ferramenta de construção Gradle. Também usaremos a abordagem Test-First para construir software.
 
 As classes de teste em um projeto Java padrão estão no diretório src/test, não em src/main. No nosso caso, decidimos colocar nosso código no pacote example.cashcard, então nossos arquivos de teste devem estar no diretório src/test/java/example/cashcard.
 
 Uma convenção comum (mas não um requisito) é sempre usar o sufixo Test para classes de teste. Nós fizemos isso aqui. O nome completo da classe CashCardJsonTest dá uma pista sobre a natureza do teste que estamos prestes a escrever.
 
+## A seguir,
+### implementaremos os testes de unidade usando TDD para os contratos JSON que usaremos ao desenvolver nossa API Family Cash Card.
+## Escrevendo um teste que falhou:
+( Aqui, abordaremos uma breve introdução à biblioteca de testes JUnit e à ferramenta de compilação do Gradle.
+
+Classes de teste em um projeto Java padrão estão no diretório src/test, não src/main. No nosso caso, decidimos colocar nosso código no pacote example.cashcard, então nossos arquivos de teste devem estar no diretório src/test/java/example/cashcard.
+
+
+ #### A primeira coisa que precisamos fazer é criar nossa nova classe de teste no diretório src/test/java/example/cashcard.
+
+#### A anotação @Test faz parte da biblioteca JUnit e o método assertThat faz parte da biblioteca AssertJ.
+
+
+![img.png](img.png)
+#### Na verdadeira moda Test-First, escrevemos um teste falhando primeiro. É importante ter um teste de falha primeiro para que você possa ter alta confiança de que o que você fez para corrigir o teste realmente funcionou.
+
+### Essa é a saída esperada da ferramenta de compilação do Gradle quando você tem um teste com falha:
+
+![img_1.png](img_1.png)
+
+### Test sucesso
+
+![img_2.png](img_2.png)
+
+#### that's it for now
+
 ## Implementando GET
 >>REST, CRUD E HTTP
 
 Vamos começar com uma definição concisa de REST : Representational State Transfer. Em um sistema RESTful, os objetos de dados são chamados de Representações de Recursos. O objetivo de uma API RESTful (Application Programming Interface) é gerenciar o estado desses recursos.
 Dito de outra forma, você pode pensar em “estado” como “valor” e “Representação de Recursos” como um “objeto” ou “coisa”. Portanto, REST é apenas uma forma de gerenciar os valores das coisas. Essas coisas podem ser acessadas por meio de uma API e geralmente são armazenadas em um armazenamento de dados persistente, como um banco de dados.
+
 
 
 ![rest](https://github.com/leila-bwt/APIRestComTestFirst/assets/108028195/3bd4ba6a-54a3-4119-9fe1-a17091fbf23d)
@@ -136,3 +179,9 @@ REST diz que a resposta precisa conter um Cash Card em seu corpo e um código de
 ## Escrevendo um Teste para o endpoint GET
 
 Embora @Autowired seja uma forma de injeção de dependência Spring, é melhor usá-lo apenas em testes.
+
+
+
+
+
+
