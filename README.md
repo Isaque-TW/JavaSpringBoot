@@ -106,6 +106,51 @@ Classes de teste em um projeto Java padrão estão no diretório src/test, não 
 
 #### that's it for now
 
+
+#### Testando o contrato de dados
+Agora, vamos escrever um teste que faça sentido para o seu objetivo: escrever o cashcard REST API.
+
+A anotação @JsonTest marca o CashCardJsonTest como uma classe de teste que usa o framework Jackson (que é incluído como parte do Spring). Isto fornece um suporte extensivo a testes e análises JSON. Também estabelece todo o comportamento relacionado para testar objetos JSON.
+
+O JacksonTester é um invólucro de conveniência para a biblioteca de análise de Jackson JSON. Ele lida com a serialização e deserialização de objetos JSON.
+
+@Autowired é uma anotação que direciona o Spring para criar um objeto do tipo solicitado.\
+
+Execute o cashCardSerializationTest() que você acabou de criar para testar a serialização da classe cashcard. Não é surpresa que o teste tenha falhado, uma vez que a classe cashcard ainda não existe.
+
+#### Para criar uma classe cashcard e o construtor que é usado no teste cashCardSerializationTest(), crie o ficheiro src/main/java/example/cashcard/CashCard.java com o seguinte conteúdo (repare que este ficheiro está no diretório src/main, não no diretório src/test):
+![img_3.png](img_3.png)
+
+
+
+1. ### Crie um arquivo chamado expected.json
+2. ### src/test/resources/example/cashcard/expected.json.
+3. ### Edite o arquivo .json esperado recém-criado e insira {} como o único conteúdo. Estamos propositadamente apenas incluindo um documento JSON vazio, o que fará com que o teste falhe.
+___________________________________________________________________________________________________________________________________________________________
+
+## Testing Deserialization
+
+#### A desserialização é o processo inverso da serialização. Transforma os dados de um ficheiro ou fluxo de bytes de volta num objecto para a sua aplicação. Isso torna possível que um objeto serializado em uma plataforma seja desserializado em uma plataforma diferente. Por exemplo, seu aplicativo cliente pode serializar um objeto no Windows enquanto o back-end o deseriliza no Linux.
+
+#### A serialização e a desserialização trabalham juntas para transformar/recriar objetos de dados de/para um formato portátil. O formato de dados mais popular para serializar dados é o JSON.
+
+#### Vamos escrever um segundo teste para desserilizar dados para que ele converta de JSON para Java após o primeiro teste passar. Este teste usa uma técnica de teste em que você escreve propositadamente um teste falhado. Especificamente: os valores de id e quantidade não são o que se espera.
+![img_4.png](img_4.png)
+
+![img_5.png](img_5.png)
+
+Successful
+![img_6.png](img_6.png)
+###
+
+#### Nesta lição, aprendeu sobre o JSON e a sua importância para as aplicações modernas. Também aprendeu como é que o JSON é usado na aplicação cashcard. Finalmente, você aprendeu os benefícios da abordagem test-first para desenvolvimento de software e, em seguida, exerceu o desenvolvimento test-first testando o contrato de dados JSON para o serviço Cash Card.
+
+#### A desserialização é o processo inverso da serialização. Transforma os dados de um ficheiro ou fluxo de bytes de volta num objecto para a sua aplicação. Isso torna possível que um objeto serializado em uma plataforma seja desserializado em uma plataforma diferente. Por exemplo, seu aplicativo cliente pode serializar um objeto no Windows enquanto o back-end o deseriliza no Linux.
+
+#### A serialização e a desserialização trabalham juntas para transformar/recriar objetos de dados de/para um formato portátil. O formato de dados mais popular para serializar dados é o JSON.
+_____________________________________________________________
+
+
 ## Implementando GET
 >>REST, CRUD E HTTP
 
@@ -133,10 +178,10 @@ Resposta
 
 O poder do REST está na maneira como ele faz referência a um recurso e na aparência da solicitação e da resposta para cada operação CRUD.
 
-Para C REATE: use o método HTTP POST.
-Para R EAD: use o método HTTP GET.
-Para U PDATE: use o método HTTP PUT.
-Para D ELETE: use o método HTTP DELETE.
+- Para C REATE: use o método HTTP POST.
+- Para R EAD: use o método HTTP GET.
+- Para U PDATE: use o método HTTP PUT.
+- Para D ELETE: use o método HTTP DELETE.
 
 O URI do terminal para objetos Cash Card começa com a /cashcardspalavra-chave. READ, UPDATEe DELETEas operações exigem que forneçamos o identificador exclusivo do recurso de destino. O aplicativo precisa desse identificador exclusivo para executar a ação correta exatamente no recurso correto. Por exemplo, para READ, UPDATE, ou DELETEum Cash Card com o identificador "42", o ponto final seria /cashcards/42.
 
