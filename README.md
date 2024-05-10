@@ -260,9 +260,41 @@ ________________________________________________________________________________
 #### REST diz que a resposta precisa conter um Cash Card em seu corpo e um código de resposta 200 (OK). Spring Web fornece a classe ResponseEntity para essa finalidade. Ele também fornece vários métodos utilitários para produzir Entidades de Resposta. Aqui, você pode usar ResponseEntity para criar um ResponseEntity com código 200 (OK) e um corpo contendo um arquivo CashCard. A implementação final é assim:
 
 ![cont4](https://github.com/leila-bwt/APIRestComTestFirst/assets/108028195/92ea2684-7208-4947-a083-bb34c02d93b5)
+_________________________________________________________________________________________________________________
+
+### Escrevendo um test de inicialização do Spring para o endpoint GET
 
 
+#### Vamos entender vários elementos importantes neste teste.
+![img_14.png](img_14.png)
+#### Isso iniciará nosso aplicativo Spring Boot e o disponibilizará para nosso teste para executar solicitações a ele.
+________________________________________________________________________________________________________________________
+![img_15.png](img_15.png)
+#### Pedimos ao Spring para injetar um auxiliar de teste que nos permitirá fazer solicitações HTTP para o aplicativo em execução localmente.
+##### Mesmo que @Autowired seja uma forma de injeção de dependência do Spring, é melhor usá-lo apenas em testes
+____________________________________________________________________________________________________________________________________________
+![img_16.png](img_16.png)
+#### Aqui usamos restTemplate para fazer uma solicitação HTTP GET para o nosso terminal de aplicação /cashcards/99.
+#### O restTemplate retornará um ResponseEntity, que capturamos em uma variável que nomeamos response. ResponseEntity é outro objeto Spring útil que fornece informações valiosas sobre o que aconteceu com o nosso pedido. 
+____________________________________________________________________________________________________________________________________________________________________________________________________________________________
+![img_17.png](img_17.png)
+#### Podemos inspecionar muitos aspectos da resposta, incluindo o código HTTP Response Status, que esperamos ser 200 OK.
+______________________________________________________________________________________________________________________________________
+### Falhará, 
+#### como esperado. Por quê? Como aprendemos na prática do primeiro teste, descrevemos nossas expectativas antes de implementar o código que satisfaz essas expectativas.
+![img_18.png](img_18.png)
+#### Entenda a falha do teste.
+#### Como explicamos, esperávamos que nosso teste falhasse no momento.
+#### Por que está falhando devido a um código de resposta HTTP NOT_FOUND 404 inesperado?
 
+#### Resposta: Como não instruímos o Spring Web como lidar com GET cashcards//99, o Spring Web está respondendo automaticamente que o endpoint é NOT_FOUND.
+________________________________________________________________________________________________________________________________________________________
+### Criando um controlador REST
+#### Spring Web Controllers são projetados para lidar e responder a solicitações HTTP.
+![img_20.png](img_20.png)
+#### Run test...
+![img_21.png](img_21.png)
+#### Apesar do nome, CashCardController não é realmente um Spring Web Controller; é apenas uma classe com Controller no nome. Assim, não irá "escutar" nossas solicitações HTTP. Portanto, precisamos dizer ao Spring para disponibilizar o Controlador como um Controlador Web para lidar com solicitações de cashcards/* URLs.
 
-
-
+#### Vamos atualizar nosso CashCardController para que ele esteja configurado para ouvir e lidar com solicitações HTTP para /cashcards.
+![img_22.png](img_22.png)
