@@ -298,3 +298,37 @@ ________________________________________________________________________________
 
 #### Vamos atualizar nosso CashCardController para que ele esteja configurado para ouvir e lidar com solicitações HTTP para /cashcards.
 ![img_22.png](img_22.png)
+#### Entenda as anotações da Spring Web.
+#### @RestController Isso diz ao Spring que esta classe é um componente do tipo RestController e capaz de lidar com solicitações HTTP.
+#### @RequestMapping("/cashcards") este é um companheiro para @RestController que indica quais solicitações de endereço devem ter acesso a este controlador.
+#### @GetMapping("/{requestedId}") private ResponseEntity<String> findById() {...}
+#### @GetMapping marca um método como um método manipulador. As solicitações GET que correspondem a cashcards/{requestedID} serão tratadas por este método.
+![img_23.png](img_23.png)
+#### Até aqui, nosso teste apenas afirma que a solicitação foi bem-sucedida, verificando o status de resposta 200 OK. Em seguida, vamos testar se a resposta contém os valores corretos
+
+#### Atualizando o test:
+![img_25.png](img_25.png)
+![img_26.png](img_26.png) Isso converte a resposta String em um objeto JSON-aware com muitos métodos auxiliares.
+![img_27.png](img_27.png) Esperamos que quando solicitamos um Cash Card com id de 99, um objeto JSON será retornado com algo no campo id. Por enquanto, afirme que o id não é nulo.
+
+#### Execute o teste -- e observe a falha. Como retornamos um objeto JSON vazio {} não devemos nos surpreender que o campo id esteja vazio.
+![img_28.png](img_28.png)
+#### Como retornamos um objeto JSON vazio {} não devemos nos surpreender que o campo id esteja vazio.
+
+#### Vamos fazer o teste passar, mas retornar algo intencionalmente errado, como 1000L.
+#### Além disso, vamos utilizar a classe de modelo de dados cashcard que criamos em uma lição anterior.
+![img_29.png](img_29.png)
+![img_30.png](img_30.png)
+#### Ele passa! No entanto - ele se sente correto? Não exatamente. Ter o passe de teste com dados incorretos parece errado.
+#### Pedimos que retornasse intencionalmente um id incorreto de 1000L para ilustrar um ponto: É importante que os testes passem ou falhem pelo motivo certo.
+#### Atualize o teste para afirmar que o id está correto e execute novamente os testes e observe a nova mensagem de falha.
+![img_31.png](img_31.png)
+#### Agora, o teste está falhando pelo motivo certo: Nós não retornamos o id correto.
+
+#### Atualize CashCardController para retornar o id correto.
+![img_32.png](img_32.png)
+#### Eles passam!
+_______________________________________________________________________________________________________________________________________
+
+### Teste a quantidade.
+#### Em seguida, vamos adicionar uma afirmação para o valor indicado pelo contrato JSON.
