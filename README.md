@@ -332,3 +332,34 @@ ________________________________________________________________________________
 
 ### Teste a quantidade.
 #### Em seguida, vamos adicionar uma afirmação para o valor indicado pelo contrato JSON.
+![img_33.png](img_33.png)
+#### Execute os testes e observe a falha.
+![img_34.png](img_34.png)
+#### Vamos atualizar o CashCardController para devolver o valor indicado pelo contrato JSON.
+![img_35.png](img_35.png)
+![img_36.png](img_36.png)
+____________________________________________________________
+
+### Usando o @PathVariable.
+#### Até agora, ignoramos o requestedId no método Controller.
+#### Vamos usar essa variável de caminho em nosso Controller para garantir que retornamos o Cash Card correto.
+#### Vamos escrever um novo teste que espera ignorar Cash Cards que não têm um id de 99. Use 1000, como temos em testes anteriores.
+![img_37.png](img_37.png)
+#### Observe que estamos esperando um código de status de resposta HTTP semântico de 404 NOT_FOUND. Se solicitarmos um Cash Card que não existe, esse Cash Card é de fato "não encontrado".
+
+#### Execute o teste e anote o resultado.
+![img_38.png](img_38.png)
+### Adicione @PathVariable.
+
+#### Vamos fazer o teste passar fazendo com que o Controlador retorne o Cash Card específico somente se enviarmos o identificador correto.
+
+#### Para fazer isso, primeiro torne o Controller ciente da variável de caminho que estamos enviando, adicionando a anotação @PathVariable ao argumento do método handler
+![img_39.png](img_39.png)
+#### @PathVariable torna o Spring Web ciente do requestedId fornecido na solicitação HTTP. Agora ele está disponível para nós usarmos em nosso método handler.
+
+#### Atualize o método handler para retornar uma resposta vazia com status NOT_FOUND, a menos que o requestedId seja 99.
+![img_40.png](img_40.png)
+Run test...
+![img_41.png](img_41.png)
+#### Nesta lição, aprendemos como usar o desenvolvimento orientado a testes para criar o endpoint REST do Family Cash Card: um GET que retorna um cashcard de uma determinada ID.
+__________________________________________________________
