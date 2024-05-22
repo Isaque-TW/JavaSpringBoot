@@ -363,3 +363,111 @@ Run test...
 ![img_41.png](img_41.png)
 #### Nesta lição, aprendemos como usar o desenvolvimento orientado a testes para criar o endpoint REST do Family Cash Card: um GET que retorna um cashcard de uma determinada ID.
 __________________________________________________________
+### Repositórios & Spring Data
+#### Neste ponto de nossa jornada de desenvolvimento, temos um sistema que retorna um registro de cartão de dinheiro codificado do nosso controlador. No entanto, o que nós realmente queremos é retornar dados reais, de um banco de dados. Então, vamos continuar nosso Steel Thread mudando nossa atenção para o banco de dados!
+
+#### O Spring Data trabalha com o Spring Boot para tornar a integração de banco de dados simples.
+#### Controller-Repository Architecture
+#### O princípio da Separação de Preocupações afirma que software bem projetado deve ser modular, com cada módulo tendo preocupações distintas e separadas de qualquer outro módulo.
+
+#### Até agora, nossa base de código só retorna uma resposta codificada do controlador. Esta configuração viola o princípio de separação de preocupações, misturando as preocupações de um controlador, que é uma abstração de uma interface web, com as preocupações de ler e escrever dados para um armazenamento de dados, como um banco de dados. Para resolver isso, usaremos um padrão de arquitetura de software comum para impor a separação do gerenciamento de dados por meio do padrão Repository.
+#### Uma estrutura de arquitetura comum que divide essas camadas, normalmente por função ou valor, como camadas de negócios, dados e apresentação, é chamada de Arquitetura em camadas. A este respeito, podemos pensar em nosso repositório e controlador como duas camadas em uma arquitetura em camadas. O controlador está em uma camada perto do cliente (como ele recebe e responde a solicitações da web) enquanto o repositório está em uma camada perto do armazenamento de dados (como ele lê e escreve para o armazenamento de dados). Pode haver camadas intermediárias também, como ditado pelas necessidades do negócio. Nós não precisamos de nenhuma camada adicional, pelo menos ainda não!
+
+#### O repositório é a interface entre o aplicativo e o banco de dados, e fornece uma abstração comum para qualquer banco de dados, tornando mais fácil mudar para um banco de dados diferente quando necessário.
+![img_42.png](img_42.png)
+#### Spring Data fornece uma coleção de ferramentas robustas de gerenciamento de dados, incluindo implementações do padrão Repository.
+______________________________________________________________________________________________________________________________________________________
+### Escolhendo um banco de dados
+
+#### Para nossa seleção de banco de dados, usaremos um banco de dados embutido na memória. "Incorporado" significa simplesmente que é uma biblioteca Java, para que possa ser adicionado ao projeto como qualquer outra dependência. "In-memory" significa que ele armazena dados apenas na memória, em vez de persistir em armazenamento permanente e durável. Ao mesmo tempo, nosso banco de dados na memória é amplamente compatível com sistemas de gerenciamento de banco de dados relacional de nível de produção (RDBMS) como MySQL, SQL Server e muitos outros. Especificamente, ele usa JDBC (a biblioteca Java padrão para conectividade de banco de dados) e SQL (a linguagem de consulta de banco de dados padrão).
+![img_43.png](img_43.png)
+#### Há compensações para usar um banco de dados na memória em vez de um banco de dados persistente. Por um lado, in-memory permite que você desenvolva sem instalar um RDBMS separado e garante que o banco de dados esteja no mesmo estado (ou seja, vazio) em cada execução de teste. No entanto, você precisa de um banco de dados persistente para o aplicativo de "produção" ao vivo. Isso leva a uma incompatibilidade de paridade de Dev-Prod: seu aplicativo pode se comportar de maneira diferente ao executar o banco de dados na memória do que ao executar em produção.
+
+#### O banco de dados específico na memória que usaremos é H2. Felizmente, o H2 é altamente compatível com outros bancos de dados relacionais, então a paridade de dev-prod não será um grande problema. Usaremos o H2 por conveniência para o desenvolvimento local, mas queremos reconhecer as compensações.
+
+### Auto Configuração
+#### Tudo o que precisamos para a funcionalidade completa do banco de dados é adicionar duas dependências. Isso mostra maravilhosamente um dos recursos mais poderosos do Spring Boot: Auto Configuration. Sem o Spring Boot, teríamos que configurar o Spring Data para falar com o H2. No entanto, como incluímos a dependência do Spring Data (e um provedor de dados específico, H2), o Spring Boot configura automaticamente seu aplicativo para se comunicar com o H2.
+
+### Spring Data’s CrudRepository
+#### Para nossa seleção de Repositório, usaremos um tipo específico de Repositório: CrudRepository do Spring Data. À primeira vista, é um pouco mágico, mas vamos descompactar essa magia.
+
+#### Segue-se uma implementação completa de todas as operações CRUD através do alargamento do CrudRepository:
+![img_44.png](img_44.png)
+#### Com apenas o código acima, um chamador pode chamar qualquer número de métodos CrudRepository predefinidos, tais como findById:
+![img_46.png](img_46.png)
+#### Onde está a implementação do método CashCardRepository.findById()? CrudRepository e tudo o que herda é uma interface sem código real!
+#### Bem, com base na estrutura específica do Spring Data usada (que para nós será o Spring Data JDBC), o Spring Data cuida dessa implementação para nós durante o tempo de inicialização do container IoC. O tempo de execução do Spring irá expor o repositório como mais um bean que você pode consultar sempre que necessário em sua aplicação.
+
+#### Como aprendemos, normalmente há trocas. Por exemplo, o CrudRepository gera instruções SQL para ler e gravar seus dados, o que é útil para muitos casos, mas às vezes você precisa escrever suas próprias instruções SQL personalizadas para casos de uso específicos.
+
+#### maioria dos aplicativos é inútil sem os dados que os usuários precisam gerenciar. Felizmente, o Spring Data integra-se perfeitamente com o Spring e o Spring Boot para tornar o armazenamento e o gerenciamento de dados fáceis. Repositórios plug-and-play minimizam sua necessidade de escrever trechos de código de gerenciamento de dados personalizados. Além disso, o poderoso mecanismo de configuração automática do Spring funciona em conjunto com os vários componentes do Spring para tornar a implementação de uma arquitetura em camadas uma tarefa fácil.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+### Agora, vamos adicionar conectividade de banco de dados para API REST usando Spring Data Repositories.
+#### Nosso Family Cash Card REST API atualmente depende de dados de cashcard codificados diretamente em nosso CashCardController. Nossos testes em CashCardApplicationTests afirmam que esses dados estão presentes.
+
+#### Sabemos que um Controlador web não deve gerenciar dados. Isso é uma violação da Separação de Preocupações. O tráfego da Web é tráfego da Web, dados são dados e software saudável tem arquiteturas dedicadas a cada área.
+#### Isso é gerenciamento de dados. Nosso Controlador não deve se preocupar em verificar IDs ou criar dados.
+
+#### Curiosamente, enquanto nossos testes fazem afirmações sobre os dados, eles não dependem ou especificam como esses dados são criados ou gerenciados.
+
+#### Essa dissociação é importante, pois nos ajuda a fazer as mudanças que precisamos.
+
+#### Para refatorar usando um repositório e um banco de dados
+#### Refatoração é o ato de alterar a implementação de um sistema de software sem alterar suas entradas, saídas ou comportamento.
+
+#### Nossos testes permitirão alterar a implementação do gerenciamento de dados da nossa API Cash Card de dados codificados dentro do nosso Controlador, para utilizar um Repositório e banco de dados.
+
+#### Exemplo contínuo do loop de desenvolvimento Red, Green, Refactor que aprendemos em uma lição anterior.
+#### "migramos" esses dados (e gerenciamento de dados) para um Repositório apoiado por banco de dados quando nossos testes passarem novamente.
+
+### Adicionar dependências de dados do Spring
+#### Este projeto foi originalmente criado usando o Spring Initializr, que nos permitiu adicionar automaticamente dependências ao nosso projeto. No entanto, agora devemos adicionar manualmente dependências ao nosso projeto.
+
+### Entendendo as dependências.
+
+#### As duas dependências que adicionamos são relacionadas, mas diferentes.
+### Adicionar dependências de dados do Spring
+#### Este projeto foi originalmente criado usando o Spring Initializr, que nos permitiu adicionar automaticamente dependências ao nosso projeto. No entanto, agora devemos adicionar manualmente dependências ao nosso projeto.
+
+
+
+#### Entendendo as dependências.
+
+#### As duas dependências que adicionamos são relacionadas, mas diferentes.
+![img_47.png](img_47.png)
+
+#### Spring Data tem muitas implementações para uma variedade de tecnologias de banco de dados relacionais e não relacionais. O Spring Data também tem várias abstrações em cima dessas tecnologias. Estas são normalmente chamadas de estrutura de Mapeamento Relacional de Objectos, ou ORM.
+
+#### Aqui vamos optar por usar o Spring Data JDBC. Da documentação do Spring Data JDBC:
+
+#### Spring Data JDBC visa ser conceitualmente fácil... Isso torna o Spring Data JDBC um ORM simples, limitado e opinativo.
+![img_48.png](img_48.png)
+#### As estruturas de gestão de bases de dados só funcionam se tiverem uma base de dados ligada. H2 é uma base de dados SQL "muito rápida, de código aberto, JDBC API" implementada em Java. Ele funciona perfeitamente com o Spring Data JDBC.
+
+#### Rodando os testes novamente, instalará as dependências e verificará e a adição não quebrou nada.
+![img_49.png](img_49.png)
+__________________________________________
+
+#### Crie o CashCardRepository.
+
+#### Crie src/main/java/example/cashcard/CashCardRepository.java e faça com que ele estenda CrudRepository.
+![img_50.png](img_50.png)
+#### É aqui que entramos na magia do Spring Data e seu padrão de repositório de dados.
+
+#### CrudRepository é uma interface fornecida pela Spring Data. Quando o estendemos (ou outras sub-Interfaces do Repositório do Spring Data), o Spring Boot e o Spring Data trabalham juntos para gerar automaticamente os métodos CRUD que precisamos para interagir com um banco de dados.
+
+#### Faça os testes.
+
+#### Podemos ver que tudo é compilado, no entanto a nossa aplicação falha. Analisando as mensagens de falha, encontramos isto:
+...
+CashCardApplicationTests > shouldNotReturnACashCardWithAnUnknownId() FAILED
+java.lang.IllegalStateException: Failed to load ApplicationContext for ...
+
+Caused by:
+java.lang.IllegalArgumentException: Could not resolve domain type of interface example.cashcard.CashCardRepository
+...
+
+
+#### Este erro críptico significa que não indicamos qual objeto de dados o CashCardRepository deve gerenciar. Para a nossa aplicação, o "tipo de domínio" deste repositório será o cashcard.
+#### Edite o CashCardRepository para especificar que ele gerencia os dados do cartão bancário e que o tipo de dados do ID do cartão bancário é Long.
