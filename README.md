@@ -471,3 +471,28 @@ java.lang.IllegalArgumentException: Could not resolve domain type of interface e
 
 #### Este erro críptico significa que não indicamos qual objeto de dados o CashCardRepository deve gerenciar. Para a nossa aplicação, o "tipo de domínio" deste repositório será o cashcard.
 #### Edite o CashCardRepository para especificar que ele gerencia os dados do cartão bancário e que o tipo de dados do ID do cartão bancário é Long.
+![img_51.png](img_51.png)
+#### Quando configuramos o repositório como CrudRepository<cashcard, Long> indicamos que o ID do cashcard é Long. No entanto, ainda precisamos dizer ao Spring Data qual campo é o ID.
+
+#### Edite a classe cashcard para configurar o id como @Id para o CashCardRepository.
+![img_52.png](img_52.png)
+### Injectar o CashCardRepository
+
+#### Embora tenhamos configurado nossas classes cashcard e CashCardRepository, não utilizamos o novo CashCardRepository para gerenciar nossos dados de cashcard. Vamos fazer isso agora.
+
+#### Injete o CashCardRepository em CashCardController.
+
+#### Editar CashCardController para aceitar um CashCardRepository.
+![img_53.png](img_53.png)
+#### Se executar os testes agora, todos eles passarão, apesar de nenhuma outra alteração na base de código utilizando o novo construtor necessário CashCardController (CashCardRepository cashCardRepository).
+
+
+### Eis a Auto Configuração e Injeção de Construção!
+
+#### A configuração automática do Spring está utilizando sua estrutura de injeção de dependência (DI), especificamente a injeção de construtores, para fornecer ao CashCardController a implementação correta do CashCardRepository em tempo de execução.
+
+#### Momento de aprendizagem: Remover o DI
+#### O que acontece quando desativamos?
+
+#### Altere temporariamente o CashCardRepository para remover a implementação do CrudRepository.
+Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'example.cashcard.CashCardRepository' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {}
